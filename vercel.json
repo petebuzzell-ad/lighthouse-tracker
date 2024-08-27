@@ -5,12 +5,9 @@
     { "src": "backend/server.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "build/backend/server.js" },
+    { "src": "/api/(.*)", "dest": "backend/server.js" },
     { "src": "^/static/(.*)", "dest": "/static/$1" },
-    { "src": "^/favicon.ico", "dest": "/favicon.ico" },
-    { "src": "^/manifest.json", "dest": "/manifest.json" },
-    { "src": "^/logo192.png", "dest": "/favicon.png" },
-    { "src": "^/logo512.png", "dest": "/favicon.png" },
+    { "handle": "filesystem" },
     { "src": ".*", "dest": "/index.html" }
   ]
 }
