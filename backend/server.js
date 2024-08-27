@@ -76,6 +76,4 @@ app.post('/api/run-lighthouse', async (req, res) => {
 // Log the reports directory path
 // console.log('Reports directory:', path.join(__dirname, 'public', 'reports'));
 
-app.listen(port, () => {
-    console.log(`Backend running on http://localhost:${port}`);
-});
+export default app;
