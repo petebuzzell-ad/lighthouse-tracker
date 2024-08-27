@@ -6,21 +6,26 @@ import ErrorBoundary from './ErrorBoundary';
 import './App.css';
 
 function App() {
-  console.log('App component rendering');  // Add this line
+  console.log('App component rendering');
 
   const [domainData, setDomainData] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState('all');
-  const [isLoading, setIsLoading] = useState(true);  // Add this line
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchData = async () => {
-    setIsLoading(true);  // Add this line
+    console.log('Fetching data');
+    setIsLoading(true);
+    setError(null);
     try {
       const reports = await getReports();
+      console.log('Fetched reports:', reports);
       setDomainData(reports);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setError('Failed to fetch reports. Please try again later.');
     } finally {
-      setIsLoading(false);  // Add this line
+      setIsLoading(false);
     }
   };
 
@@ -34,6 +39,7 @@ function App() {
       fetchData();
     } catch (error) {
       console.error('Error adding URLs:', error);
+      setError('Failed to add URLs. Please try again.');
     }
   };
 
@@ -43,6 +49,7 @@ function App() {
       fetchData();
     } catch (error) {
       console.error('Error running Lighthouse scan:', error);
+      setError('Failed to run Lighthouse scan. Please try again.');
     }
   };
 
@@ -52,32 +59,34 @@ function App() {
     <ErrorBoundary>
       <div className="App">
         <h1>Lighthouse Tracker</h1>
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : (
-          <div className="url-input-container">
-            <UrlInput onSubmit={handleUrlSubmit} />
-          </div>
+        {isLoading && <p>Loading...</p>}
+        {error && <p className="error">{error}</p>}
+        {!isLoading && !error && (
+          <>
+            <div className="url-input-container">
+              <UrlInput onSubmit={handleUrlSubmit} />
+            </div>
+            <div className="domain-filter">
+              <label htmlFor="domain-select">Filter by domain: </label>
+              <select
+                id="domain-select"
+                value={selectedDomain}
+                onChange={(e) => setSelectedDomain(e.target.value)}
+              >
+                {domains.map(domain => (
+                  <option key={domain} value={domain}>{domain}</option>
+                ))}
+              </select>
+            </div>
+            <div className="domain-reports">
+              <DomainReports 
+                reports={domainData} 
+                onRunScan={handleRunScan} 
+                selectedDomain={selectedDomain}
+              />
+            </div>
+          </>
         )}
-        <div className="domain-filter">
-          <label htmlFor="domain-select">Filter by domain: </label>
-          <select
-            id="domain-select"
-            value={selectedDomain}
-            onChange={(e) => setSelectedDomain(e.target.value)}
-          >
-            {domains.map(domain => (
-              <option key={domain} value={domain}>{domain}</option>
-            ))}
-          </select>
-        </div>
-        <div className="domain-reports">
-          <DomainReports 
-            reports={domainData} 
-            onRunScan={handleRunScan} 
-            selectedDomain={selectedDomain}
-          />
-        </div>
       </div>
     </ErrorBoundary>
   );
