@@ -70,10 +70,14 @@ app.post('/api/run-lighthouse', async (req, res) => {
     }
 });
 
-// Serve static files from the 'public' directory
-// app.use('/reports', express.static(path.join(__dirname, 'public', 'reports')));
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../build')));
 
-// Log the reports directory path
-// console.log('Reports directory:', path.join(__dirname, 'public', 'reports'));
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build', 'index.html'));
+});
 
+// Export the Express API
 export default app;
