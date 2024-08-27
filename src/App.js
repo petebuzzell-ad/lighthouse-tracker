@@ -1,23 +1,71 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import UrlInput from './components/UrlInput';
+import DomainReports from './components/DomainReports';
+import { getReports, addUrls, runLighthouseScan } from './services/api';
 import './App.css';
 
 function App() {
+  const [domainData, setDomainData] = useState(null);
+  const [selectedDomain, setSelectedDomain] = useState('all');
+
+  const fetchData = async () => {
+    try {
+      const reports = await getReports();
+      setDomainData(reports);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleUrlSubmit = async (urls) => {
+    try {
+      await addUrls(urls);
+      fetchData();
+    } catch (error) {
+      console.error('Error adding URLs:', error);
+    }
+  };
+
+  const handleRunScan = async (url, device) => {
+    try {
+      await runLighthouseScan(url, device);
+      fetchData();
+    } catch (error) {
+      console.error('Error running Lighthouse scan:', error);
+    }
+  };
+
+  const domains = domainData ? ['all', ...Object.keys(domainData)] : ['all'];
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      <h1>Lighthouse Tracker</h1>
+      <div className="url-input-container">
+        <UrlInput onSubmit={handleUrlSubmit} />
+      </div>
+      <div className="domain-filter">
+        <label htmlFor="domain-select">Filter by domain: </label>
+        <select
+          id="domain-select"
+          value={selectedDomain}
+          onChange={(e) => setSelectedDomain(e.target.value)}
         >
-          Learn React
-        </a>
-      </header>
+          {domains.map(domain => (
+            <option key={domain} value={domain}>{domain}</option>
+          ))}
+        </select>
+      </div>
+      <div className="domain-reports">
+        <DomainReports 
+          reports={domainData} 
+          onRunScan={handleRunScan} 
+          selectedDomain={selectedDomain}
+        />
+      </div>
     </div>
   );
 }
