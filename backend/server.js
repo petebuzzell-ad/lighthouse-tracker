@@ -7,6 +7,15 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Add this near the top of your routes
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'Server is running' });
+  });
+
 // Your existing API routes
 app.use('/api', (req, res, next) => {
   console.log('API request:', req.method, req.url);
@@ -25,7 +34,7 @@ app.get('*', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  res.status(500).json({ error: 'Something went wrong!' });
 });
 
 // For local development
