@@ -8,6 +8,10 @@
     { "src": "/api/(.*)", "dest": "backend/server.js" },
     { "src": "^/static/(.*)", "dest": "/static/$1" },
     { "src": "^/(.*)\\.(.*)$", "dest": "/$1.$2" },
-    { "src": "/(.*)", "dest": "/index.html" }
+    { 
+      "src": "^/((?!api).)*$", 
+      "dest": "/index.html",
+      "headers": { "Cache-Control": "no-store" }
+    }
   ]
 }

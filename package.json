@@ -27,7 +27,7 @@
     "build": "react-scripts build && cp -r backend build/",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "vercel-build": "npm run build"
+    "vercel-build": "bash ./vercel-build.sh"
   },
   "eslintConfig": {
     "extends": [
