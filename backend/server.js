@@ -1,5 +1,7 @@
 const express = require('express');
 const path = require('path');
+const { getReports, addUrls, runLighthouseScan } = require('./services/urlService');
+
 const app = express();
 
 // Error handling for unhandled promises
@@ -11,16 +13,43 @@ process.on('unhandledRejection', (reason, promise) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Add this near the top of your routes
+// Test route
 app.get('/api/test', (req, res) => {
-    res.json({ message: 'Server is running' });
-  });
+  res.json({ message: 'Server is running' });
+});
 
-// Your existing API routes
-app.use('/api', (req, res, next) => {
-  console.log('API request:', req.method, req.url);
-  next();
-}, require('./routes/api'));
+// API routes
+app.get('/api/reports', async (req, res) => {
+  try {
+    const reports = await getReports();
+    res.json(reports);
+  } catch (error) {
+    console.error('Error fetching reports:', error);
+    res.status(500).json({ error: 'Failed to fetch reports' });
+  }
+});
+
+app.post('/api/urls', async (req, res) => {
+  try {
+    const { urls } = req.body;
+    await addUrls(urls);
+    res.json({ message: 'URLs added successfully' });
+  } catch (error) {
+    console.error('Error adding URLs:', error);
+    res.status(500).json({ error: 'Failed to add URLs' });
+  }
+});
+
+app.post('/api/scan', async (req, res) => {
+  try {
+    const { url, device } = req.body;
+    await runLighthouseScan(url, device);
+    res.json({ message: 'Scan initiated successfully' });
+  } catch (error) {
+    console.error('Error initiating scan:', error);
+    res.status(500).json({ error: 'Failed to initiate scan' });
+  }
+});
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'build')));
