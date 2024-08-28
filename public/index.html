@@ -12,6 +12,12 @@
     <link rel="apple-touch-icon" href="./favicon.png" />
     <link rel="manifest" href="./manifest.json" />
     <title>Lighthouse Tracker | ARCDIG</title>
+    <script type="text/javascript">
+      window.onerror = function(message, source, lineno, colno, error) {
+        console.error('Global error:', message, source, lineno, colno, error);
+        document.body.innerHTML += '<div style="color: red;">Error loading the application. Check the console for details.</div>';
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app. Blaggity</noscript>
