@@ -55,12 +55,44 @@ function App() {
 
   const domains = domainData ? ['all', ...Object.keys(domainData)] : ['all'];
 
+  // Add global error handler
+  useEffect(() => {
+    window.addEventListener('error', (event) => {
+      console.log('Global error caught:', event);
+      // Filter out Chrome extension errors
+      if (!event.message.includes('message port closed')) {
+        setError(event.message);
+      }
+    });
+
+    // Add unhandled promise rejection handler
+    window.addEventListener('unhandledrejection', (event) => {
+      console.log('Unhandled promise rejection:', event);
+      setError(event.reason?.message || 'An error occurred');
+    });
+
+    return () => {
+      window.removeEventListener('error', setError);
+      window.removeEventListener('unhandledrejection', setError);
+    };
+  }, []);
+
+  // Add error boundary
+  if (error) {
+    return (
+      <div className="error-container">
+        <h2>Something went wrong</h2>
+        <p>{error}</p>
+        <button onClick={() => setError(null)}>Try Again</button>
+      </div>
+    );
+  }
+
   return (
     <ErrorBoundary>
       <div className="App">
         <h1>Lighthouse Tracker</h1>
         {isLoading && <p>Loading...</p>}
-        {error && <p className="error">{error}</p>}
         {!isLoading && !error && (
           <>
             <div className="url-input-container">

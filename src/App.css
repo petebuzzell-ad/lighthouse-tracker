@@ -197,3 +197,30 @@ tr:nth-child(even) {
 .domain-summary td {
   padding: 5px 10px;
 }
+
+.error-container {
+  padding: 20px;
+  margin: 20px;
+  border: 1px solid #ff4444;
+  border-radius: 4px;
+  background-color: #fff5f5;
+  color: #cc0000;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  font-size: 1.2em;
+  color: #666;
+}
+
+.error-message {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #fff5f5;
+  border: 1px solid #ff4444;
+  border-radius: 4px;
+  color: #cc0000;
+}
