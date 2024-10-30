@@ -1,5 +1,4 @@
 import axios from 'axios';
-import supabase from './supabase';
 
 const API_BASE_URL = '/api';
 
@@ -45,13 +44,23 @@ export const getReports = async () => {
 };
 
 export const addUrls = async (urls) => {
-  const response = await axios.post(`${API_BASE_URL}/urls`, urls);
-  return response.data;
+  try {
+    const { data } = await api.post('/urls', urls);
+    return data;
+  } catch (error) {
+    console.error('Error adding URLs:', error);
+    throw error;
+  }
 };
 
 export const runLighthouseScan = async (url, device) => {
-  const response = await axios.post(`${API_BASE_URL}/scan`, { url, device });
-  return response.data;
+  try {
+    const { data } = await api.post('/scan', { url, device });
+    return data;
+  } catch (error) {
+    console.error('Error running scan:', error);
+    throw error;
+  }
 };
 
 // Add a function to test the database connection
