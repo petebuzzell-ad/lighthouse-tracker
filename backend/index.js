@@ -1,6 +1,6 @@
-const app = require('./server.js');
+import app from './server.js';
 
-module.exports = (req, res) => {
+export default function handler(req, res) {
   console.log('Request received:', req.method, req.url);
   app(req, res);
-};
+}
