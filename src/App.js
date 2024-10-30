@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import UrlInput from './components/UrlInput';
 import DomainReports from './components/DomainReports';
-import { getReports } from './services/api';
-import { addUrls, runLighthouseScan } from './services/urlService';
+import { getReports, addUrls, runLighthouseScan } from './services/api';
 import ErrorBoundary from './ErrorBoundary';
 import './App.css';
 
