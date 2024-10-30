@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Serve static files from the React build
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../build')));
 
 // API routes
 app.get('/api/test', (req, res) => {
@@ -18,7 +18,7 @@ app.get('/api/test', (req, res) => {
 
 // Catch-all route should serve index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
 // Error handling middleware
