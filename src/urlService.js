@@ -3,9 +3,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-export const addUrls = async (urls) => {
+export async function addUrls(urls) {
     console.log('Adding URLs to Supabase:', urls);
     const newUrls = urls.flatMap(url => [
         { url, device: 'desktop', status: 'pending' },
@@ -21,11 +21,7 @@ export const addUrls = async (urls) => {
         console.error('Error adding URLs to Supabase:', error);
         throw error;
     }
-};
-
-export const runLighthouseScan = async (url, device) => {
-    // ... implementation
-};
+}
 
 export async function getUrlsToTest() {
     try {
