@@ -34,6 +34,63 @@ async function addUrls(urls) {
     }
 }
 
+function processReportsData(urlsData, reportsData) {
+    console.log('Processing reports data...');
+    // Group URLs by domain
+    const domainData = {};
+
+    urlsData.forEach(url => {
+        const domain = new URL(url.url).hostname;
+        if (!domainData[domain]) {
+            domainData[domain] = {
+                urls: [],
+                avgPerformance: 0,
+                avgAccessibility: 0,
+                avgSEO: 0
+            };
+        }
+
+        // Find reports for this URL
+        const urlReports = reportsData.filter(
+            report => report.url === url.url && report.device === url.device
+        );
+
+        domainData[domain].urls.push({
+            url: url.url,
+            device: url.device,
+            status: url.status,
+            lighthouse_reports: urlReports.map(report => ({
+                id: report.id,
+                performance: report.performance,
+                accessibility: report.accessibility,
+                seo: report.seo,
+                created_at: report.created_at,
+                report_json: report.report_json
+            }))
+        });
+
+        // Calculate averages for the domain
+        if (urlReports.length > 0) {
+            domainData[domain].avgPerformance += urlReports.reduce((acc, report) => acc + report.performance, 0) / urlReports.length;
+            domainData[domain].avgAccessibility += urlReports.reduce((acc, report) => acc + report.accessibility, 0) / urlReports.length;
+            domainData[domain].avgSEO += urlReports.reduce((acc, report) => acc + report.seo, 0) / urlReports.length;
+        }
+    });
+
+    // Normalize domain averages
+    Object.keys(domainData).forEach(domain => {
+        const urlCount = domainData[domain].urls.length;
+        if (urlCount > 0) {
+            domainData[domain].avgPerformance /= urlCount;
+            domainData[domain].avgAccessibility /= urlCount;
+            domainData[domain].avgSEO /= urlCount;
+        }
+    });
+
+    console.log('Processed data:', domainData);
+    return domainData;
+}
+
 async function getReports() {
     console.log('getReports: Starting database query');
     try {
