@@ -24,10 +24,10 @@
   },
   "scripts": {
     "start": "node backend/server.js",
-    "build": "react-scripts build && cp -r build backend/",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "vercel-build": "npm run build"
+    "vercel-build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
